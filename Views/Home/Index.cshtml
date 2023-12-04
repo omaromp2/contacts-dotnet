@@ -1,0 +1,116 @@
+﻿@{
+ViewData["Title"] = "Home Page";
+}
+
+@model ContactIndexViewModel
+
+    <div>
+        <h1 class="display-4">Contacts</h1>
+
+        <form asp-action="Index" method="get">
+            <div class="row">
+                <div class="col-6">
+                    <input type="text" name="search" placeholder="Search contacts..." class="form-control" style="margin-top: 1%;" />
+                </div>
+                <div class="col-4">
+                    <button class="btn btn-primary btn-lg btn-block" type="submit" >
+                        <i class="fa-solid fa-magnifying-glass"></i> Search
+                    </button>
+                    <!-- Trigger Button for Modal -->
+                    <button 
+                        type="button" 
+                        class="btn btn-primary btn-lg" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#newContactModal"
+                        >
+                        <i class="fa-regular fa-square-plus"></i> New Contact
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <hr>
+
+        <table class="table table-hover">
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Fax</th>
+                <th>Email</th>
+                <th>Last Update</th>
+            </tr>
+
+            @foreach (var contact in Model.Contacts)
+            {
+            <tr>
+                <td>
+                    <a class="btn btn-primary" asp-action="Detail" asp-route-id="@contact.ContactId" >
+                        <i class="fa-solid fa-eye"></i>
+                    </a>
+                </td>
+                <td>@contact.Name</td>
+                <td>@FormatPhoneNumber(@contact.Phone)</td>
+                <td>@FormatPhoneNumber(contact.Fax)</td>
+                <td>@contact.Email</td>
+                <td>@contact.LastUpdatedDate</td>
+            </tr>
+            }
+        </table>
+
+        <!-- Modal -->
+        <div class="modal fade" id="newContactModal" tabindex="-1" aria-labelledby="newContactModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="newContactModalLabel">New Contact</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form asp-action="Create" asp-controller="Home" method="post">
+                        <div class="modal-body">
+                            <!-- Modal Body Content Here -->
+                            <div class="form-group">
+                                <label for="name">Name:</label>
+                                <input type="text" class="form-control" id="name" name="Name">
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email:</label>
+                                <input type="email" class="form-control" id="email" name="Email">
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone:</label>
+                                <input type="text" class="form-control" id="phone" name="Phone">
+                            </div>
+                            <div class="form-group">
+                                <label for="fax">Fax:</label>
+                                <input type="text" class="form-control" id="fax" name="Fax">
+                            </div>
+                            <div class="form-group">
+                                <label for="notes">Notes:</label>
+                                <textarea class="form-control" id="notes" name="Notes" rows="3"></textarea>
+                            </div>
+                            <input type="hidden" asp-for="UserId" value="@Model.UserId" />
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @functions {
+    private string FormatPhoneNumber(string phone)
+    {
+        if (string.IsNullOrWhiteSpace(phone) || phone.Length != 10)
+            return phone; // Return original string if it's not 10 digits
+
+        return $"({phone.Substring(0, 3)}) {phone.Substring(3, 3)}-{phone.Substring(6)}";
+    }
+}
