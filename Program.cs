@@ -23,7 +23,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options => {
         options.LoginPath = "/Login";
-        // options.LogoutPath = "/Logout";
+        options.LogoutPath = "/Logout";
     });
 
 var app = builder.Build();
