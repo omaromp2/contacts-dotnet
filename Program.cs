@@ -6,9 +6,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// DB Con 
-builder.Services.AddDbContext<ApplicationDbContext>(options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// DB Con  sql server 
+// builder.Services.AddDbContext<ApplicationDbContext>(options => 
+//     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Sqlite
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+ // Corrected line
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IContactsRepository, ContactRepository>();
