@@ -40,6 +40,17 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     dbContext.Database.Migrate();
+
+    // Check if the admin user already exists
+    var adminExists = dbContext.Users.Any(u => u.Username == "admin");
+    if (!adminExists)
+    {
+        // Create and add the admin user
+        var adminUser = new User { Username = "admin" };
+        dbContext.Users.Add(adminUser);
+        dbContext.SaveChanges();
+    }
+
 }
 
 // Configure the HTTP request pipeline.
